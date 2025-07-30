@@ -49,10 +49,35 @@ class MainPage(tk.Toplevel):
             check_button = tk.Checkbutton(frame2, text=label_text, variable=self._launch_options[i])
             check_button.grid(row=i,column=0,side='left',justify='left')
         
-
         # Submit
+        submit_button = tk.Button(frame3,text="Submit",command=self.submit)
+        submit_button.pack()
+
+  
     def on_select(self, event=None):
         """
         Updates the combobox values when typing
         """
-        pass
+        current_text = self._which_mon_button.get()
+
+        # Clear the previous suggestions
+        if (len(current_text) > 2):
+            self._which_mon_button['values'] = []
+
+            # Create a list of suggestions based on the current input
+            suggestions = [item for item in self._names if item.lower().startswith(current_text.lower())]
+    
+            # Update the combobox values with the suggestions
+            self._which_mon_button['values'] = suggestions
+            self._which_mon_button.event_generate("<Down>")
+            
+    def submit(self, event=None):
+        """
+        Fetches the requested pages
+        """
+        # gathers the options from the checkboxes, and the mon name
+        options = [var.get() for var in self._launch_options]
+        pokemon = self._which_mon_button.get()
+        
+        # diverts options to another function
+        self._master.handle_options(self, options)
